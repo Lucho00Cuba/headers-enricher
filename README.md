@@ -109,7 +109,7 @@ The files in `kubernetes/` provide a ready-to-use development environment.
 #### 1. Start minikube
 
 ```bash
-minikube start
+minikube start -p traefik --kubernetes-version=v1.32.0
 ```
 
 #### 2. Add the Traefik Helm repo
@@ -122,7 +122,7 @@ helm repo update
 #### 3. Install Traefik with the plugin enabled
 
 ```bash
-helm install traefik traefik/traefik \
+helm upgrade --install traefik traefik/traefik \
   --namespace traefik \
   --create-namespace \
   -f kubernetes/values.yaml
