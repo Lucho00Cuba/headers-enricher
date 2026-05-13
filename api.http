@@ -1,0 +1,30 @@
+@baseUrl = http://localhost
+
+### 1. Base case: should inject X-Request-Id and X-User=anonymous
+GET {{baseUrl}}/
+Host: localhost
+
+###
+
+### 2. With XAuthUser: should inject X-User=luis
+GET {{baseUrl}}/
+Host: localhost
+XAuthUser: admin
+
+###
+
+### 3. Without XAuthUser and with any other header: X-User should remain anonymous
+GET {{baseUrl}}/
+Host: localhost
+X-Debug: true
+
+###
+
+### 4. Two consecutive requests: X-Request-Id should change between calls
+GET {{baseUrl}}/
+Host: localhost
+
+###
+GET {{baseUrl}}/
+Host: localhost
+XAuthUser: admin

@@ -1,0 +1,35 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: headers-enricher
+  namespace: default
+spec:
+  plugin:
+    headers-enricher:
+      allowedEnv:
+        - NODE_NAME
+        - REGION
+        - HOSTNAME
+      headers:
+        request:
+          X-Request-Id:
+            from: uuid
+          X-Node-Name:
+            from: env
+            name: NODE_NAME
+          X-Region:
+            from: env
+            name: REGION
+            default: unknown
+          X-Request-Meta:
+            from: template
+            value: '[[ .Method ]] [[ .Path ]] [[ .ClientIP ]]'
+        response:
+          X-Plugin:
+            from: literal
+            value: headers-enricher
+          X-Response-Status:
+            from: template
+            value: '[[ .StatusCode ]]'
+          X-Response-Request-Id:
+            from: uuid

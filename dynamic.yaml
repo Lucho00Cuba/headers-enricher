@@ -1,0 +1,50 @@
+# Example of dynamic configuration
+http:
+  middlewares:
+    headers-enricher:
+      plugin:
+        headers-enricher:
+          headers:
+            request:
+              X-Request-Id:
+                from: uuid
+              X-User:
+                from: request.header
+                name: XAuthUser
+                default: anonymous
+              X-User-WS:
+                from: request.header
+                name: XAuthUser
+              X-Request-Template:
+                from: template
+                value: 'req:[[ .Method ]] [[ .Path ]] [[ .UUID ]] [[ .ClientIP ]]'
+              X-User-Template:
+                from: template
+                value: '[[ or (index .RequestHeaders "xauthuser") "guest" ]]'
+              X-Forwarded-Server:
+                from: env
+                name: NODE_NAME
+              X-Node-Name:
+                from: env
+                name: NODE_NAME
+            response:
+              X-Plugin:
+                from: literal
+                value: headers-enricher
+              X-Response-Request-Id:
+                from: uuid
+              X-Response-Id-Copy:
+                from: request.header
+                name: X-Request-Id
+              X-Response-User:
+                from: request.header
+                name: XAuthUser
+              X-Response-Plugin-Copy:
+                from: response.header
+                name: X-Plugin
+              X-Response-Template:
+                from: template
+                value: 'res:[[ .StatusCode ]] [[ .Method ]] [[ .Path ]] [[ .Host ]]'
+              X-Response-Node-Name:
+                from: request.header
+                name: X-Node-Name

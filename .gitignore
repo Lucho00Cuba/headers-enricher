@@ -1,0 +1,25 @@
+# Local files & directories
+.local/
+*.local
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Go coverage and test artifacts
+coverage.out
+coverage.html
+*.coverprofile
+
+# Go build artifacts
+*.test
+*.out
+bin/
+dist/
+
+# Logs
+*.log
+
+# Act cache and artifacts
+.act/

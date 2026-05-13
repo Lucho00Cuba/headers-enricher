@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+# Skip on the initial commit — HEAD doesn't exist yet so git log returns nothing.
+if ! git rev-parse --verify HEAD > /dev/null 2>&1; then
+  exit 0
+fi
+
+"${ROOT}/scripts/changelog.sh"
+git -C "${ROOT}" add CHANGELOG.md

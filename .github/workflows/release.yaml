@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GO_VERSION: 1.25
+      CGO_ENABLED: 0
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run tests
+        env:
+          CGO_ENABLED: 1
+        run: go test -race ./...
+
+      - name: Generate CHANGELOG.md
+        run: |
+          chmod +x scripts/changelog.sh
+          ./scripts/changelog.sh
+
+      - name: Extract release notes
+        run: ./scripts/changelog.sh --extract=${{ github.ref_name }} > release-notes.md
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --notes-file release-notes.md

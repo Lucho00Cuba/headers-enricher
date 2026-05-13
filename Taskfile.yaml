@@ -1,0 +1,81 @@
+version: "3"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  help:
+    silent: true
+    cmds:
+      - task --list
+
+  test:
+    desc: Run Go tests
+    cmds:
+      - go test -v ./...
+
+  lint:
+    desc: Run linter
+    cmds:
+      - |
+        docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:latest golangci-lint run ./...
+
+  test:coverage:
+    desc: Run Go tests with coverage
+    cmds:
+      - go test ./... -coverprofile=coverage.out -covermode=atomic
+      - go tool cover -func=coverage.out
+
+  docker:up:
+    desc: Start Traefik and whoami
+    cmds:
+      - docker compose up -d
+
+  docker:restart:
+    desc: Restart Traefik to reload plugin code and dynamic config
+    cmds:
+      - docker compose up -d --force-recreate traefik
+
+  docker:down:
+    desc: Stop containers
+    cmds:
+      - docker compose down
+
+  act:lint:
+    desc: Run ci workflow locally with act
+    env:
+      ACTRC: .actrc
+    cmds:
+      - act -W .github/workflows/ci.yaml
+
+  act:test:
+    desc: Run go-cross workflow locally with act
+    env:
+      ACTRC: .actrc
+    cmds:
+      - act -W .github/workflows/go-cross.yaml
+
+  act:
+    desc: Run all workflows locally with act
+    env:
+      ACTRC: .actrc
+    cmds:
+      - act
+
+  changelog:
+    desc: Generate CHANGELOG.md
+    cmds:
+      - ./scripts/changelog.sh
+
+  changelog:preview:
+    desc: Preview CHANGELOG.md
+    cmds:
+      - ./scripts/changelog.sh --dry-run
+
+  hooks:install:
+    desc: Install git hooks
+    cmds:
+      - chmod +x hooks/pre-commit
+      - ln -sf "$(pwd)/hooks/pre-commit" .git/hooks/pre-commit

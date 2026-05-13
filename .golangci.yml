@@ -1,0 +1,25 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard
+  enable:
+    - misspell       # catch typos in comments and strings
+    - gocritic       # bug, perf, and style checks
+    - errorlint      # correct error wrapping (errors.Is / errors.As)
+    - fatcontext     # detect context stored in loops / closures
+    - bodyclose      # ensure HTTP response bodies are closed
+
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+      disabled-checks:
+        - hugeParam   # small structs in this codebase, not a concern
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

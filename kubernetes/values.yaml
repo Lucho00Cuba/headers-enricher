@@ -1,0 +1,36 @@
+# Helm values for traefik/traefik chart (v40.x)
+# Development environment with headers-enricher plugin.
+#
+# Install:
+#   helm install traefik traefik/traefik \
+#     --namespace traefik --create-namespace \
+#     -f kubernetes/values.yaml
+
+experimental:
+  plugins:
+    headers-enricher:
+      moduleName: "github.com/lucho00cuba/headers-enricher"
+      version: "v0.1.0" # replace with the desired release tag
+
+# Dashboard enabled for development.
+ingressRoute:
+  dashboard:
+    enabled: true
+
+# Expose Traefik env vars to the plugin via allowedEnv.
+env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: REGION
+    value: "local"
+
+# Light resource footprint for minikube.
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "300m"
+    memory: "256Mi"

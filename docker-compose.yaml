@@ -1,0 +1,32 @@
+services:
+  traefik:
+    image: traefik:3.6.9
+    hostname: traefik-local
+    container_name: traefik-local
+    environment:
+      - NODE_NAME=ldari620
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--providers.file.directory=/etc/traefik"
+      - "--providers.file.watch=true"
+      - "--experimental.localPlugins.headers-enricher.moduleName=github.com/lucho00cuba/headers-enricher"
+      - "--log.level=DEBUG"
+    ports:
+      - "8080:8080" # dashboard
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./dynamic.yaml:/etc/traefik/dynamic.yml"
+      - ".:/plugins-local/src/github.com/lucho00cuba/headers-enricher"
+
+  whoami:
+    image: traefik/whoami
+    hostname: traefik-whoami
+    container_name: whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami.middlewares=headers-enricher@file"
