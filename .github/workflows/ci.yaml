@@ -19,6 +19,7 @@ jobs:
       GO_VERSION: 1.25
       GOLANGCI_LINT_VERSION: v2.12.2
       CGO_ENABLED: 0
+      YAEGI_VERSION: v0.14.2
     defaults:
       run:
         working-directory: ${{ github.workspace }}/go/src/github.com/${{ github.repository }}
@@ -63,3 +64,15 @@ jobs:
 
       - name: Run tests
         run: go test ./...
+
+      - name: Install Yaegi ${{ env.YAEGI_VERSION }}
+        run: curl -sfL https://raw.githubusercontent.com/traefik/yaegi/master/install.sh | bash -s -- -b $(go env GOPATH)/bin ${YAEGI_VERSION}
+
+      - name: Run tests with Yaegi
+        run: yaegi test -tags yaegi -v .
+        env:
+          GOPATH: ${{ github.workspace }}/go
+          HOSTNAME: test-host
+          NODE_NAME: worker-01
+          ALLOWED_VAR: visible
+          SECRET_VAR: hidden

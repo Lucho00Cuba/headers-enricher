@@ -1,5 +1,9 @@
 version: "3"
 
+# Keep in sync with .github/workflows/ci.yaml (YAEGI_VERSION).
+vars:
+  YAEGI_VERSION: v0.14.2
+
 tasks:
   default:
     silent: true
@@ -79,3 +83,26 @@ tasks:
     cmds:
       - chmod +x hooks/pre-commit
       - ln -sf "$(pwd)/hooks/pre-commit" .git/hooks/pre-commit
+
+  yaegi:install:
+    desc: Install Yaegi {{.YAEGI_VERSION}} into $(go env GOPATH)/bin
+    cmds:
+      - curl -sfL https://raw.githubusercontent.com/traefik/yaegi/master/install.sh | bash -s -- -b $(go env GOPATH)/bin {{.YAEGI_VERSION}}
+
+  yaegi:test:
+    desc: Run tests with Yaegi
+    cmds:
+      - |
+        YAEGI_BIN="$(go env GOPATH)/bin/yaegi"
+        YAEGI_GOPATH="$(pwd)/.yaegi"
+        MODULE_PATH="github.com/lucho00cuba/headers-enricher"
+        MODULE_DIR="$YAEGI_GOPATH/src/$MODULE_PATH"
+
+        mkdir -p "$(dirname "$MODULE_DIR")"
+        ln -snf "$(pwd)" "$MODULE_DIR"
+
+        HOSTNAME="test-host" \
+        NODE_NAME="worker-01" \
+        ALLOWED_VAR="visible" \
+        SECRET_VAR="hidden" \
+        GOPATH="$YAEGI_GOPATH" "$YAEGI_BIN" test -tags yaegi -v "$MODULE_PATH"

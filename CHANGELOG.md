@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Maintenance
+
+- update minikube and Helm commands ([`0a2e598`](https://github.com/Lucho00Cuba/headers-enricher/commit/0a2e598ee7b6b3d09ec496e4155717e14e7981a8))
+
 ## [v0.1.0] - 2026-05-13
 
 ### Added
