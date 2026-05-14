@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Maintenance
 
+- add Yaegi tests to GitHub Actions and local Task workflow ([`767f7bc`](https://github.com/Lucho00Cuba/headers-enricher/commit/767f7bc52498ab5d82dca7724abd23566ed0b1ee))
 - update minikube and Helm commands ([`0a2e598`](https://github.com/Lucho00Cuba/headers-enricher/commit/0a2e598ee7b6b3d09ec496e4155717e14e7981a8))
 
 ## [v0.1.0] - 2026-05-13

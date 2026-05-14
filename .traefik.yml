@@ -11,7 +11,7 @@ import: github.com/lucho00cuba/headers-enricher
 summary: Generate and compose HTTP headers from request data, response data, and environment variables.
 
 # Medias associated to the plugin (optional)
-# iconPath: assets/icon.png
+iconPath: assets/icon.png
 # bannerPath: assets/banner.png
 
 # Configuration data for your plugin.
